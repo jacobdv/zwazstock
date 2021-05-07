@@ -1,0 +1,10 @@
+#stock-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.list-stock {
+    display: inline;
+    padding-right: 8px;
+}
