@@ -1,10 +1,79 @@
+/* Whole Page */
+html {
+    height: 100%;
+    width: 100%;
+    border:lightgreen 2px solid;
+}
+body {
+    height: 100%;
+    background-color: lavender;
+}
+
+/* Title */
+#title {
+    width: 100%;
+    text-align: center;
+    padding-bottom: 1px;
+}
+#title:hover {
+    cursor: pointer;
+}
+
+/* Nav Bar */
+#stock-list-div {
+    width: 100%;
+}
 #stock-list {
     list-style-type: none;
     margin: 0;
     padding: 0;
+    text-align: center;
 }
 
+/* Items in Nav Bar */
 .list-stock {
     display: inline;
-    padding-right: 8px;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+.active {
+    color: blueviolet;
+    font-weight: bold;
+}
+.inactive {
+    text-decoration: none;
+    color: gray;
+    font-weight: lighter;
+}
+.inactive:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+/* Top Row of Stock Data */
+#stockTitle {
+    color: blueviolet;
+    width: fit-content;
+    padding-left: 0;
+    padding-right: 20px;
+    margin:0;
+}
+
+#stock-header-info p {
+    margin: 0;
+}
+
+/* Messing Around */
+#poemTitle {
+    font-style: italic;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0;
+}
+
+#poemText {
+    display: block;
+    margin-left: 50%;
+    margin-right: 50%;
 }
