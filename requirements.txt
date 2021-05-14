@@ -1,0 +1,2 @@
+# conda create --name <env name> --file requirements.txt
+python=3.6
