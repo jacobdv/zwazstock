@@ -4,6 +4,7 @@ from flask_pymongo import PyMongo
 from flask_cors import CORS
 from census import Census
 import pymongo
+from pymongo.message import query
 import requests
 from config import finnhub_API_KEY
 import datetime
@@ -25,27 +26,28 @@ app.config["MONGO_URI"] = "mongodb://localhost:27017/ZwazStocks"
 mongo = PyMongo(app)
 
 # Creating overview collection.
-collection = zwazStocksDB['Share Overview']
+overviewCollection = zwazStocksDB['Share Overview']
 # Clears the collection for inputting the updated info.
-collection.delete_many({})
-
+overviewCollection.delete_many({})
 
 # Adding overview information for each stock.
 for stock in zwazStocks:
+    # Pulls symbol and shares for each stock.
     stockItems = stock.items()
     for key, value in stockItems:
         if key == 'symbol':
             symbol = value
         elif key == 'shares':
             shares = value
-    # Inserts share information for each stock.
-    x = collection.insert_one({ 'symbol': symbol, 'shares': shares })
     
+    # Creates a collection for each stock.
+    stockCollection = zwazStocksDB[symbol]
+
     # API request for each stock.
     response = requests.get(f'https://finnhub.io/api/v1/quote?symbol={symbol}&token={finnhub_API_KEY}')
     if response.status_code == 200:
         stockDict = response.json()
-        stockDict = {
+        stockObj = {
             'meta': stock,
             'prices': {
                 'open': stockDict['o'],
@@ -56,9 +58,22 @@ for stock in zwazStocks:
             },
             'date': (datetime.datetime.fromtimestamp(stockDict['t']).strftime('%Y-%m-%d')),
         }
-        print(stockDict)
     else:
         print(f'There seems to have been an error with {symbol}')
+
+    
+    # Inserts share information for each stock to the overview collection.
+    x = overviewCollection.insert_one({ 'symbol': symbol, 'shares': shares, 'investment': round((shares * stockDict['c']),2) })
+
+    # Queries stock to see if there is already a price in for this day.
+    todayQuery = { 'date': stockObj['date'] }
+    queryResult = list(stockCollection.find(todayQuery))
+    
+    # Replaces today's values if there are any and adds them if there aren't.
+    if len(queryResult) > 0:
+        stockCollection.update_one(todayQuery, { '$set': stockObj })
+    else:
+        stockCollection.insert_one(stockObj)
 
 # Home route that displays index.html content.
 @app.route("/")
