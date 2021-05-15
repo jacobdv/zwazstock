@@ -61,7 +61,6 @@ for stock in zwazStocks:
     else:
         print(f'There seems to have been an error with {symbol}')
 
-    
     # Inserts share information for each stock to the overview collection.
     x = overviewCollection.insert_one({ 'symbol': symbol, 'shares': shares, 'investment': round((shares * stockDict['c']),2) })
 
