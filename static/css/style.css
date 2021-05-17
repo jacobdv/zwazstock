@@ -1,12 +1,18 @@
+:root {
+    --primaryColor: lavender;
+    --secondaryColor: lightgreen;
+
+}
+
 /* Whole Page */
 html {
     height: 100%;
     width: 100%;
-    border:lightgreen 2px solid;
+    border: var(--secondaryColor) 2px solid;
 }
 body {
     height: 100%;
-    background-color: lavender;
+    background-color: var(--primaryColor);
 }
 
 /* Title */
@@ -58,9 +64,26 @@ body {
     padding-right: 20px;
     margin:0;
 }
-
 #stock-header-info p {
     margin: 0;
+}
+.endpoint-link {
+    text-decoration: none;
+    color: black;
+    font-weight: normal;
+}
+.endpoint-link:hover {
+    text-decoration: underline;
+    color: black;
+}
+.toprow {
+    margin-top: 20px;
+}
+#topChart {
+    border: var(--secondaryColor) solid 2px;
+    min-height: 300px;
+    height: 100%;
+    max-width: 100%;
 }
 
 /* Messing Around */

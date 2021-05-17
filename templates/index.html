@@ -11,27 +11,34 @@
     <link rel="stylesheet" type="text/css" href="static/css/style.css">
     <!-- Favicon -->
     <link rel="icon" type='image/x-icon' href="/static/images/favicon.ico">
-
+    <!-- Plotly -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
+    <audio id='kraken' src='https://ia800304.us.archive.org/3/items/kraken_0711_librivox/kraken_tennyson_krs_64kb.mp3' preload='auto'></audio>
     <div class='container'>
-        <div class='row'>
+        <div class='row titlerow'>
             <div class='col-md-12'>
                 <div id='title'>
                     <h1>ZwazozawZ</h1>
                 </div>
             </div>
         </div>
-        <div class='row'>
+        <div class='row navrow'>
             <div class='col-md-12'>
                 <div id='stock-list-div'>
 
                 </div>
             </div>
         </div>
-        <div class='row'>
-            <div class='col-md-12'>
+        <div class='row toprow'>
+            <div class='col-sm-12 col-md-3'>
                 <div id='stock-header-info'>
+
+                </div>
+            </div>
+            <div class='col-sm-12 col-md-9'>
+                <div id='topChart'>
 
                 </div>
             </div>
@@ -46,6 +53,6 @@
     <script type="text/javascript" src="static/js/config.js"></script>
     <script type="text/javascript" src="static/js/constants.js"></script>
     <script type="text/javascript" src="static/js/pageInit.js"></script>
-    <script type="module" src="static/js/pullMongo.js"></script>
+    <!-- <script type="module" src="static/js/pullMongo.js"></script> -->
 </body>
 </html>

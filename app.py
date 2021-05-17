@@ -9,6 +9,11 @@ import requests
 from config import finnhub_API_KEY
 import datetime
 
+# Additional tools for API routes.
+import json
+from bson import json_util
+from bson.json_util import dumps
+
 # List of stock dictionaries.
 zwazStocks = [{'symbol': 'AAL','shares': 8 },{'symbol': 'AAPL','shares': 2.003},{'symbol': 'AGRO','shares': 6},{'symbol': 'ATVI','shares': 2.01 },{'symbol': 'DIN','shares': 2},{'symbol': 'F','shares': 5},{'symbol': 'HEXO','shares': 8},{'symbol': 'LAZR','shares': 4},{'symbol': 'NKE','shares': 11.092},{'symbol': 'OPEN','shares': 5},{'symbol': 'SELB','shares': 20.32},{'symbol': 'VZ','shares': 0.828505},{'symbol': 'ZYNE','shares': 1},]
 
@@ -28,7 +33,9 @@ mongo = PyMongo(app)
 # Creating overview collection.
 overviewCollection = zwazStocksDB['Share Overview']
 # Clears the collection for inputting the updated info.
-overviewCollection.delete_many({})
+day = int(datetime.date.today().strftime('%w'))
+if day > 0 and day < 6:
+        overviewCollection.delete_many({})
 
 # Adding overview information for each stock.
 for stock in zwazStocks:
@@ -62,22 +69,39 @@ for stock in zwazStocks:
         print(f'There seems to have been an error with {symbol}')
 
     # Inserts share information for each stock to the overview collection.
-    x = overviewCollection.insert_one({ 'symbol': symbol, 'shares': shares, 'investment': round((shares * stockDict['c']),2) })
+    if day > 0 and day < 6:
+        x = overviewCollection.insert_one({ 'symbol': symbol, 'shares': shares, 'investment': round((shares * stockDict['c']),2) })
 
-    # Queries stock to see if there is already a price in for this day.
-    todayQuery = { 'date': stockObj['date'] }
-    queryResult = list(stockCollection.find(todayQuery))
     
-    # Replaces today's values if there are any and adds them if there aren't.
-    if len(queryResult) > 0:
-        stockCollection.update_one(todayQuery, { '$set': stockObj })
-    else:
-        stockCollection.insert_one(stockObj)
+    if day > 0 and day < 6:
+        # Queries stock to see if there is already a price in for this day.
+        todayQuery = { 'date': stockObj['date'] }
+        queryResult = list(stockCollection.find(todayQuery))
+        
+        # Replaces today's values if there are any and adds them if there aren't.
+        if len(queryResult) > 0:
+            stockCollection.update_one(todayQuery, { '$set': stockObj })
+        else:
+            stockCollection.insert_one(stockObj)
 
 # Home route that displays index.html content.
 @app.route("/")
 def index():
     return render_template("index.html")
+
+# API Endpoint for the overview collection of stock data.
+@app.route("/zAPI/stocks/", methods=['GET'])
+def overviewData():
+    stockList = list(overviewCollection.find())
+    return json.dumps(stockList, default = json_util.default) 
+
+# API Endpoint for each stock.
+@app.route('/zAPI/stock/', defaults={'stock': zwazStocks[0]['symbol']})
+@app.route('/zAPI/stock/<stock>/', methods=['GET','POST'])
+def individualData(stock):  
+    collection = zwazStocksDB[f'{stock}']
+    pricesList = list(collection.find())
+    return json.dumps(pricesList, default = json_util.default)
 
 # Do the thing. (:
 if __name__ == "__main__":
