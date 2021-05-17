@@ -80,10 +80,12 @@ function individualLineGraph(stockObject) {
         let layout = {
             title: 'Closing Prices',
             xaxis: {
+                title: 'Date',
                 range: [sDate, eDate],
                 type: 'date'
             },
             yaxis: {
+                title: 'Price per Share',
                 range: [0, (Math.max(currentPriceList) * 1.2)],
                 type: 'linear'
             }
