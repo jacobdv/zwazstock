@@ -11,6 +11,7 @@ html {
     background-color: var(--secondaryColor);
 }
 body {
+    min-height: 99%;
     margin: 3px;
     background-color: var(--primaryColor);
 }
@@ -90,7 +91,6 @@ body {
     margin-top: 20px;
 }
 #secondChart {
-    min-height: 450px;
     height: 100%;
     max-width: 100%;
 }

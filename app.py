@@ -63,6 +63,7 @@ for stock in zwazStocks:
                 'low': stockDict['l'],
                 'previousClose': stockDict['pc']
             },
+            # Date has been verified. Currently using PST.
             'date': (datetime.datetime.fromtimestamp(stockDict['t']).strftime('%Y-%m-%d')),
         }
     else:

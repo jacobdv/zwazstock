@@ -58,6 +58,7 @@ function displayStockData(stock) {
 }
 
 function individualLineGraph(stockObject) { 
+    d3.select('#secondChart').html('').attr('height','0')
     // API call from created endpoints.
     let url = `http://127.0.0.1:5000/zAPI/stock/${stockObject.symbol}/`;
     d3.json(url).then(function(apiData) {
@@ -234,4 +235,4 @@ function fourTwentyNine() {
         Then once by man and angels to be seen<br>\
         In roaring he shall rise and on the surface die.');
     }
-}
+};
