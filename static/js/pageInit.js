@@ -167,6 +167,8 @@ async function asyncPortion() {
         let value = parseFloat((a * b).toFixed(2));
         return value;
     })
+
+    // Homepage Bubble Chart
     let bubbleTrace = {
         x: shares,
         y: valuation,
@@ -187,18 +189,23 @@ async function asyncPortion() {
         },
         showlegend: false
     };
-    let bubbleConfig = { responsive: true };
-    Plotly.newPlot('topChart', bubbleData, bubbleLayout, bubbleConfig);
+    let config = { responsive: true };
+    Plotly.newPlot('topChart', bubbleData, bubbleLayout, config);
+
+    // Homepage Pie Chart
+    let pieTrace = {
+        values: valuation, 
+        labels: names,
+        type: 'pie'
+    };
+    let pieData = [pieTrace];
+    let pieLayout = {
+        title: 'Total Investment Breakdown by Stock'
+    }
+    Plotly.newPlot('secondChart', pieData, pieLayout, config);
 }
 
 asyncPortion();
-
-// Homepage bubble chart.
-// let shares = chartingOnLoad.map(item => item.meta.shares);
-// let valuation = chartingOnLoad.map(item => (item.shares * item.prices.current));
-// console.log(shares)
-
-// console.log(chartingOnLoad)
 
 // "Error handling."
 function fourTwentyNine() {

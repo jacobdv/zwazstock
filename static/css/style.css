@@ -8,10 +8,10 @@
 html {
     height: 100%;
     width: 100%;
-    border: var(--secondaryColor) 2px solid;
+    background-color: var(--secondaryColor);
 }
 body {
-    height: 100%;
+    margin: 3px;
     background-color: var(--primaryColor);
 }
 
@@ -80,8 +80,17 @@ body {
     margin-top: 20px;
 }
 #topChart {
-    border: var(--secondaryColor) solid 2px;
-    min-height: 300px;
+    min-height: 450px;
+    height: 100%;
+    max-width: 100%;
+}
+
+/* Second Row */
+.secondRow {
+    margin-top: 20px;
+}
+#secondChart {
+    min-height: 450px;
     height: 100%;
     max-width: 100%;
 }
