@@ -1,7 +1,6 @@
 :root {
     --primaryColor: lavender;
     --secondaryColor: lightgreen;
-
 }
 
 /* Whole Page */
@@ -93,6 +92,7 @@ body {
 #secondChart {
     height: 100%;
     max-width: 100%;
+    min-height: 450px;
 }
 
 /* Messing Around */

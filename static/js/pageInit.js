@@ -1,12 +1,12 @@
 // Data object for stocks.
 let stockData = [];
 
-// Converts UNIX timestamps to YYYY-MM-DD format.
-function toHumanDate(unixTimestamp) {
-    let placeholderDate = new Date(unixTimestamp * 1000);
-    humanDate = `${(placeholderDate.getFullYear())}-${((placeholderDate.getMonth() + 1) < 10 ? '0' : '') + (placeholderDate.getMonth() + 1)}-${(placeholderDate.getDate() < 10 ? '0' : '') + placeholderDate.getDate()}` 
-    return humanDate;
-}
+// // Converts UNIX timestamps to YYYY-MM-DD format.
+// function toHumanDate(unixTimestamp) {
+//     let placeholderDate = new Date(unixTimestamp * 1000);
+//     humanDate = `${(placeholderDate.getFullYear())}-${((placeholderDate.getMonth() + 1) < 10 ? '0' : '') + (placeholderDate.getMonth() + 1)}-${(placeholderDate.getDate() < 10 ? '0' : '') + placeholderDate.getDate()}` 
+//     return humanDate;
+// }
 
 // Displaying data on the page.
 function displayStockData(stock) {
@@ -24,24 +24,26 @@ function displayStockData(stock) {
     })
 
     // Calls API for the selected stock.
-    d3.json(`${finnhubBaseLink}api/v1/quote?symbol=${stock}&token=${finnhub_API_KEY}`).then(stockCall => {
+    d3.json(`http://127.0.0.1:5000/zAPI/stock/${stock}/`).then(stockCall => {
+        // Sets
+        stockCall = stockCall[(stockCall.length - 1)];
         // Stock object.
         let stockObject = {
             'symbol': stock,
             'prices': {
-                'open': stockCall.o,
-                'current': stockCall.c,
-                'high': stockCall.h,
-                'low': stockCall.l,
-                'previousClose': stockCall.pc
+                'open': stockCall.prices.open,
+                'current': stockCall.prices.current,
+                'high': stockCall.prices.high,
+                'low': stockCall.prices.low,
+                'previousClose': stockCall.prices.previousClose
             },
-            'date': toHumanDate(stockCall.t),
+            'date':stockCall.date,
         }
         // Makes sure the return was valid, then appends information to the page.
         if (stockObject.prices.current === 0) {
             currentPrice.text('There was an issue retrieving data for this stock.')
         } else {
-            currentPrice.text(`Current Price: $${stockObject.prices.current}`);
+            currentPrice.text(`Current Price: $${(stockObject.prices.current).toFixed(2)}`);
             let sharesOwned = stockHeaderInfo.append('p').text(`Shares: ${shares}`);
             let investedSum;
             investedSum = stockHeaderInfo.append('p').text(`Total Invested: $${(stockObject.prices.current * shares).toFixed(2)}`);
@@ -50,26 +52,35 @@ function displayStockData(stock) {
         }
         
         // Calls function for line graph.
-        individualLineGraph(stockObject)
+        individualLineGraph(stock);
+        zLineGraph(stock);
 
     }).catch(error => {
-        fourTwentyNine();
+        let errorCode = parseInt(error.message);
+        if (errorCode === 429) {
+            // This shouldn't be called very often now that I'm on my own API. I think you'd have to run the app.py five times in a minute.
+            fourTwentyNine();
+        } else {
+            console.log(errorCode);
+            console.log(error)
+            console.log('PUT IN ERROR HANDLING FOR THIS ONE');
+        }
     })
 }
 
-function individualLineGraph(stockObject) { 
+function individualLineGraph(stock) { 
     d3.select('#secondChart').html('').attr('height','0')
     // API call from created endpoints.
-    let url = `http://127.0.0.1:5000/zAPI/stock/${stockObject.symbol}/`;
+    let url = `http://127.0.0.1:5000/zAPI/stock/${stock}/`;
     d3.json(url).then(function(apiData) {
         let dates = apiData.map(item => item.date);
-        let currentPriceList = apiData.map(item => item.prices.current);
+        let currentPriceList = apiData.map(item => (item.prices.current).toFixed(2));
         let sDate = dates[0];
         let eDate = dates.slice(-1)[0];
         let trace = {
             type: 'scatter',
             mode: 'lines+markers',
-            name: stockObject.symbol,
+            name: stock,
             x: dates,
             y: currentPriceList,
             line: {
@@ -81,7 +92,7 @@ function individualLineGraph(stockObject) {
             title: 'Closing Prices',
             xaxis: {
                 title: 'Date',
-                range: [sDate, eDate],
+                range: [0.8 * sDate, eDate * 1.2],
                 type: 'date'
             },
             yaxis: {
