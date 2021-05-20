@@ -28,7 +28,7 @@ zwazStocksDB = client['ZwazStocks']
 # Connections to the MongoDB database.
 app.config["DEBUG"] = True
 app.config["MONGO_URI"] = "mongodb://localhost:27017/ZwazStocks"
-mongo = PyMongo(app)
+mongo = PyMongo(app)    
 
 # Creating overview collection.
 overviewCollection = zwazStocksDB['Share Overview']
