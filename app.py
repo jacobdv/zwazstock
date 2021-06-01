@@ -74,7 +74,7 @@ for stock in zwazStocks:
         x = overviewCollection.insert_one({ 'symbol': symbol, 'shares': shares, 'investment': round((shares * stockDict['c']),2) })
 
     
-    if day > 0 and day < 6:
+    if day > 0:# and day < 6:
         # Queries stock to see if there is already a price in for this day.
         todayQuery = { 'date': stockObj['date'] }
         queryResult = list(stockCollection.find(todayQuery))
